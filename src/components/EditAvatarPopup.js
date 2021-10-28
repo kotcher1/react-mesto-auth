@@ -20,7 +20,7 @@ class EditAvatarPopup extends React.Component {
 
   render() {
     return (
-      <PopupWithForm onSubmit={this.handleSubmit} title='Обновить аватар' name='avatar' buttonTitle='Сохранить' isOpen={this.props.isOpen} onClose={this.props.onClose}>
+      <PopupWithForm onSubmit={this.handleSubmit} title='Обновить аватар' name='avatar' buttonTitle='Сохранить' isOpen={this.props.isOpen} onClose={this.props.onClose} version="white">
         <input className="popup__input" ref={this.avatarRef} type="url" defaultValue="" placeholder="Ссылка" id="pictureLink" name="link" required />
         <span className="popup__input-error">
         </span>

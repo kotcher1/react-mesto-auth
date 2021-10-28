@@ -1,9 +1,13 @@
 import Header from './Header'
 import Main from './Main'
-import Footer from './Footer'
+// import Footer from './Footer'
+import Login from './Login'
+import Register from './Register'
 import React from 'react'
 import {api} from '../utils/Api.js'
 import { CurrentUserContext } from '../contexts/CurrentUserContext' 
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import ProtectedRoute from './ProtectedRoute'
 
 class App extends React.Component  {
 
@@ -16,6 +20,7 @@ class App extends React.Component  {
       selectedCard: {},
       currentUser: {},
       cards: [],
+      loggedIn: false,
     }
   }
 
@@ -117,27 +122,42 @@ class App extends React.Component  {
 
   render() {
     return (
-      <CurrentUserContext.Provider value={this.state.currentUser}>
-        <div className="page">
-          <Header/>
-          <Main onEditProfile={this.handleEditProfileClick} 
-                onAddPlace={this.handleAddPlaceClick} 
-                onEditAvatar={this.handleEditAvatarClick}
-                isEditAvatarPopupOpen={this.state.isEditAvatarPopupOpen}
-                isEditProfilePopupOpen={this.state.isEditProfilePopupOpen}
-                isAddPlacePopupOpen={this.state.isAddPlacePopupOpen}
-                selectedCard={this.state.selectedCard}
-                closeAllPopups={this.closeAllPopups}
-                onOpenPopup={this.handleCardClick}
-                onUpdateUser={this.handleUpdateUser}
-                onUpdateAvatar={this.handleUpdateAvatar}
-                cards={this.state.cards}
-                onCardLike={this.handleCardLike}
-                onCardDelete={this.handleCardDelete}
-                onAddCard={this.handleAddPlaceSubmit}/>
-          <Footer />
-        </div>
-      </CurrentUserContext.Provider>
+      <BrowserRouter>
+        <CurrentUserContext.Provider value={this.state.currentUser}>
+          <div className="page">
+            <main>
+              <Switch>
+                <ProtectedRoute component={Main} loggedIn={this.state.loggedIn} exact path="/"
+                  onEditProfile={this.handleEditProfileClick} 
+                  onAddPlace={this.handleAddPlaceClick} 
+                  onEditAvatar={this.handleEditAvatarClick}
+                  isEditAvatarPopupOpen={this.state.isEditAvatarPopupOpen}
+                  isEditProfilePopupOpen={this.state.isEditProfilePopupOpen}
+                  isAddPlacePopupOpen={this.state.isAddPlacePopupOpen}
+                  selectedCard={this.state.selectedCard}
+                  closeAllPopups={this.closeAllPopups}
+                  onOpenPopup={this.handleCardClick}
+                  onUpdateUser={this.handleUpdateUser}
+                  onUpdateAvatar={this.handleUpdateAvatar}
+                  cards={this.state.cards}
+                  onCardLike={this.handleCardLike}
+                  onCardDelete={this.handleCardDelete}
+                  onAddCard={this.handleAddPlaceSubmit}
+                  >
+                </ProtectedRoute>
+                <Route path="/sign-up">
+                  <Header page="sign_up"/>
+                  <Register />
+                </Route>
+      	        <Route path="/sign-in">
+                  <Header page="log_in"/>
+                  <Login />
+                </Route>
+              </Switch>
+            </main>
+          </div>
+        </CurrentUserContext.Provider>
+      </BrowserRouter>
     );
   }
 

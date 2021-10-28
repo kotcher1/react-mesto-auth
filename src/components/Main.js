@@ -1,4 +1,6 @@
 import React from 'react'
+import Header from './Header'
+import Footer from './Footer'
 import PopupWithForm from './PopupWithForm'
 import EditProfilePopup from './EditProfilePopup'
 import EditAvatarPopup from './EditAvatarPopup'
@@ -27,8 +29,8 @@ class Main extends React.Component {
   render() {
 
     return (
-
-      <main>
+      <div>
+        <Header page="main"/>
         <section className="profile">
           <div className="profile__block">
             <div className="profile__avatar-block">
@@ -64,7 +66,8 @@ class Main extends React.Component {
         <PopupWithForm title='Вы уверены?' name='delete' buttonTitle='Да' onClose={this.closeAllPopups}/>
         <EditAvatarPopup onUpdateAvatar={this.onUpdateAvatar} isOpen={this.props.isEditAvatarPopupOpen} onClose={this.closeAllPopups} />
         <ImagePopup card={this.props.selectedCard} onClose={this.closeAllPopups}/>
-      </main>
+        <Footer />
+      </div>
     )
   }
 }
