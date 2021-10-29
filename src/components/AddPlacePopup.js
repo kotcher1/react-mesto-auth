@@ -15,6 +15,8 @@ class AddPlacePopup extends React.Component {
       cardName: this.nameRef.current.value,
       cardLink: this.linkRef.current.value,
     });
+    document.getElementById('pictureName').value = '';
+    document.getElementById('link').value = '';
   } 
 
   render() {

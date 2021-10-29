@@ -2,6 +2,8 @@ import React from 'react'
 import PopupWithForm from './PopupWithForm'
 import InfoTooltip  from './InfoTooltip';
 import { register } from '../utils/auth.js';
+import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 class Register extends React.Component {
 
@@ -24,17 +26,23 @@ class Register extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    register(this.state.password, this.state.email).then((res) => {
-      if(res){
+    register(this.state.password, this.state.email)
+    .then((res) => {
+      if(!res.error){
         this.setState({
           status: 'success'
         })
+        this.props.onRegister();
+        this.props.history.push('/sign-in');
       } else {
         this.setState({
           status: 'fail'
         })
+        this.props.onRegister();
       }
-      this.props.onRegister();
+    })
+    .catch(err => {
+      console.log(err);
     })
  }
 
@@ -55,9 +63,9 @@ class Register extends React.Component {
             <p className="register__question-text">
               Уже зарегистрированы?
             </p>
-            <a className="register__link" href="/sign-in">
+            <Link className="register__link" to="/sign-in">
               Войти
-            </a>
+            </Link>
           </div>
           <InfoTooltip status={this.state.status} isOpen={this.props.isOpen} onClose={this.onClose}/>
         </section>
@@ -66,4 +74,4 @@ class Register extends React.Component {
   }
 }
 
-export default Register
+export default withRouter(Register)

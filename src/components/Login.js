@@ -13,6 +13,7 @@ class Login extends React.Component {
       email: '',
       password: '',
       status: '',
+      isLoginStatusPopupOpen: false,
     }
   }
 
@@ -21,6 +22,14 @@ class Login extends React.Component {
     this.setState({
       [name]: value
     });
+  }
+
+  handleLoginClick = () => {
+    this.setState({ isLoginStatusPopupOpen: true })
+  }
+
+  handleClose = () => {
+    this.setState({ isLoginStatusPopupOpen: false })
   }
 
   handleSubmit = (e) => {
@@ -43,7 +52,7 @@ class Login extends React.Component {
         this.setState({
           status: 'fail'
         });
-        this.props.onLogin();
+        this.handleLoginClick();
       }
     })
     .catch(err => console.log(err));
@@ -62,7 +71,7 @@ class Login extends React.Component {
             </span>
           </PopupWithForm>
         </section>
-        <InfoTooltip status={this.state.status} isOpen={this.props.isOpen} onClose={this.onClose}/>
+        <InfoTooltip status={this.state.status} isOpen={this.state.isLoginStatusPopupOpen} onClose={this.handleClose}/>
       </div>
     )
   }

@@ -11,10 +11,6 @@ export const register = (password, email) => {
   .then((response) => {
     return response.json();
   })
-  .then((res) => {
-    return res;
-  })
-  .catch((err) => console.log(err));
 };
 
 export const login = (email, password) => {
@@ -32,7 +28,6 @@ export const login = (email, password) => {
       return data;
     } 
   })
-  .catch(err => console.log(err))
 };
 
 export const checkToken = (jwt) => {
@@ -43,5 +38,4 @@ export const checkToken = (jwt) => {
     },
   })
   .then(res => res.json())
-  .then(data => data)
 };

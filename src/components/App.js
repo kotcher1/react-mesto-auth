@@ -6,7 +6,7 @@ import Register from './Register'
 import React from 'react'
 import {api} from '../utils/Api.js'
 import { CurrentUserContext } from '../contexts/CurrentUserContext' 
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute'
 import { checkToken } from '../utils/auth.js';
 
@@ -19,7 +19,6 @@ class App extends React.Component  {
       isAddPlacePopupOpen: false,
       isEditAvatarPopupOpen: false,
       isRegistrationStatusPopupOpen: false,
-      isLoginStatusPopupOpen: false,
       selectedCard: {},
       currentUser: {},
       cards: [],
@@ -31,7 +30,8 @@ class App extends React.Component  {
   handleTokenCheck = () => {
     if (localStorage.getItem('jwt')){
     const jwt = localStorage.getItem('jwt');
-    checkToken(jwt).then((res) => {
+    checkToken(jwt)
+    .then((res) => {
       if (res){
         this.setState({
           loggedIn: true,
@@ -41,7 +41,8 @@ class App extends React.Component  {
         });
       }
       console.log(res)
-    }); 
+    })
+    .catch(err => console.log(err))
   }
   }
 
@@ -101,12 +102,8 @@ class App extends React.Component  {
     this.setState({ isRegistrationStatusPopupOpen: true })
   }
 
-  handleLoginClick = () => {
-    this.setState({ isLoginStatusPopupOpen: true })
-  }
-
   closeAllPopups = () => {
-    this.setState({ isAddPlacePopupOpen: false, isEditProfilePopupOpen: false, isEditAvatarPopupOpen: false, isRegistrationStatusPopupOpen: false, isLoginStatusPopupOpen: false, selectedCard: {}});
+    this.setState({ isAddPlacePopupOpen: false, isEditProfilePopupOpen: false, isEditAvatarPopupOpen: false, isRegistrationStatusPopupOpen: false, selectedCard: {}});
   }
 
   handleCardClick = (card) => {
@@ -206,7 +203,10 @@ class App extends React.Component  {
                 </Route>
       	        <Route path="/sign-in">
                   <Header page="log_in" method={this.handleClickRegister}/>
-                  <Login onLogin={this.handleLoginClick} isOpen={this.state.isLoginStatusPopupOpen} onClose={this.closeAllPopups} handleLogin={this.handleLogin} handleEmail={this.handleEmail}/>
+                  <Login handleLogin={this.handleLogin} handleEmail={this.handleEmail}/>
+                </Route>
+                <Route path="*">
+                    {this.state.loggedIn ? <Redirect to="/"/> : <Redirect to="/sign-in"/>}
                 </Route>
               </Switch>
             </main>
