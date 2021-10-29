@@ -6,8 +6,9 @@ import Register from './Register'
 import React from 'react'
 import {api} from '../utils/Api.js'
 import { CurrentUserContext } from '../contexts/CurrentUserContext' 
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute'
+import { checkToken } from '../utils/auth.js';
 
 class App extends React.Component  {
 
@@ -17,11 +18,31 @@ class App extends React.Component  {
       isEditProfilePopupOpen: false,
       isAddPlacePopupOpen: false,
       isEditAvatarPopupOpen: false,
+      isRegistrationStatusPopupOpen: false,
+      isLoginStatusPopupOpen: false,
       selectedCard: {},
       currentUser: {},
       cards: [],
       loggedIn: false,
+      email: '',
     }
+  }
+
+  handleTokenCheck = () => {
+    if (localStorage.getItem('jwt')){
+    const jwt = localStorage.getItem('jwt');
+    checkToken(jwt).then((res) => {
+      if (res){
+        this.setState({
+          loggedIn: true,
+          email: res.data.email,
+        }, () => {
+          this.props.history.push("/");
+        });
+      }
+      console.log(res)
+    }); 
+  }
   }
 
   getCard() {
@@ -46,6 +67,14 @@ class App extends React.Component  {
     })
   } 
 
+  handleLogin = () => {
+    this.setState({ loggedIn: true });
+  }
+
+  handleEmail = (email) => {
+    this.setState({ email });
+  }
+
   handleCardDelete = (card) => {
     api.deleteCard(card._id)
     .then(() => {
@@ -68,8 +97,16 @@ class App extends React.Component  {
     this.setState({ isAddPlacePopupOpen: true });
   }
 
+  handleRegisterClick = () => {
+    this.setState({ isRegistrationStatusPopupOpen: true })
+  }
+
+  handleLoginClick = () => {
+    this.setState({ isLoginStatusPopupOpen: true })
+  }
+
   closeAllPopups = () => {
-    this.setState({ isAddPlacePopupOpen: false, isEditProfilePopupOpen: false, isEditAvatarPopupOpen: false, selectedCard: {}});
+    this.setState({ isAddPlacePopupOpen: false, isEditProfilePopupOpen: false, isEditAvatarPopupOpen: false, isRegistrationStatusPopupOpen: false, isLoginStatusPopupOpen: false, selectedCard: {}});
   }
 
   handleCardClick = (card) => {
@@ -118,16 +155,33 @@ class App extends React.Component  {
   componentDidMount() {
     this.getUserInfo();
     this.getCard();
+    this.handleTokenCheck();
+  }
+
+  handleOut = () => {
+    localStorage.removeItem('jwt');
+    this.setState({
+      loggedIn: false,
+      email: '',
+    })
+  }
+
+  handleClickRegister = () => {
+    this.props.history.push("/sign-up");
+  }
+
+  handleClickLogin = () => {
+    this.props.history.push("/sign-in");
   }
 
   render() {
     return (
-      <BrowserRouter>
         <CurrentUserContext.Provider value={this.state.currentUser}>
           <div className="page">
             <main>
               <Switch>
                 <ProtectedRoute component={Main} loggedIn={this.state.loggedIn} exact path="/"
+                  email={this.state.email}
                   onEditProfile={this.handleEditProfileClick} 
                   onAddPlace={this.handleAddPlaceClick} 
                   onEditAvatar={this.handleEditAvatarClick}
@@ -143,24 +197,24 @@ class App extends React.Component  {
                   onCardLike={this.handleCardLike}
                   onCardDelete={this.handleCardDelete}
                   onAddCard={this.handleAddPlaceSubmit}
+                  handleOut={this.handleOut}
                   >
                 </ProtectedRoute>
                 <Route path="/sign-up">
-                  <Header page="sign_up"/>
-                  <Register />
+                  <Header page="sign_up" method={this.handleClickLogin}/>
+                  <Register onRegister={this.handleRegisterClick} isOpen={this.state.isRegistrationStatusPopupOpen} onClose={this.closeAllPopups}/>
                 </Route>
       	        <Route path="/sign-in">
-                  <Header page="log_in"/>
-                  <Login />
+                  <Header page="log_in" method={this.handleClickRegister}/>
+                  <Login onLogin={this.handleLoginClick} isOpen={this.state.isLoginStatusPopupOpen} onClose={this.closeAllPopups} handleLogin={this.handleLogin} handleEmail={this.handleEmail}/>
                 </Route>
               </Switch>
             </main>
           </div>
         </CurrentUserContext.Provider>
-      </BrowserRouter>
     );
   }
 
 }
 
-export default App;
+export default withRouter(App);

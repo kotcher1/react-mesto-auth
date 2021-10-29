@@ -30,7 +30,7 @@ class Main extends React.Component {
 
     return (
       <div>
-        <Header page="main"/>
+        <Header email={this.props.email} page="main" method={this.props.handleOut}/>
         <section className="profile">
           <div className="profile__block">
             <div className="profile__avatar-block">
