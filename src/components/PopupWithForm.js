@@ -11,6 +11,10 @@ class PopupWithForm extends React.Component {
     this.version = props.version;
   }
 
+  handleClose = () => {
+    this.onClose(this.props.inputs)
+  }
+
   render() {
     return (
       <section className={`popup popup_type_${this.name} ${this.props.isOpen === true ? 'popup_opened' : ''} ${this.version === 'black' && 'popup_black'} `}>
@@ -25,7 +29,7 @@ class PopupWithForm extends React.Component {
             </button>
           </form>
           {this.version === 'white' && (
-            <button className="popup__close-button" type="button" onClick={this.onClose}>
+            <button className="popup__close-button" type="button" onClick={this.handleClose}>
             </button>
           )}
         </div>

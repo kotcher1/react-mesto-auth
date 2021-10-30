@@ -86,7 +86,7 @@ class App extends React.Component  {
     })
   }
 
-  handleEditAvatarClick = () => {
+  handleEditAvatarClick = (input) => {
     this.setState({ isEditAvatarPopupOpen: true });
   }
 
@@ -102,8 +102,11 @@ class App extends React.Component  {
     this.setState({ isRegistrationStatusPopupOpen: true })
   }
 
-  closeAllPopups = () => {
+  closeAllPopups = (inputs) => {
     this.setState({ isAddPlacePopupOpen: false, isEditProfilePopupOpen: false, isEditAvatarPopupOpen: false, isRegistrationStatusPopupOpen: false, selectedCard: {}});
+    if(inputs) {
+      inputs.forEach(input => input.current.value = '')
+    }
   }
 
   handleCardClick = (card) => {
