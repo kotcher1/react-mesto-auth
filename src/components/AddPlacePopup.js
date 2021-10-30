@@ -17,9 +17,14 @@ class AddPlacePopup extends React.Component {
     });
   } 
 
+  componentDidUpdate() {
+    this.nameRef.current.value = '';
+    this.linkRef.current.value = '';
+  }
+
   render() {
     return (
-      <PopupWithForm title='Новое место' name='add' inputs={[this.nameRef, this.linkRef]} buttonTitle='Создать' onSubmit={this.handleSubmit} isOpen={this.props.isOpen} onClose={this.props.onClose} version="white">
+      <PopupWithForm title='Новое место' name='add' buttonTitle='Создать' onSubmit={this.handleSubmit} isOpen={this.props.isOpen} onClose={this.props.onClose} version="white">
         <input className="popup__input" ref={this.nameRef} type="text" defaultValue="" placeholder="Название" id="pictureName" name="pictureName" minLength="2" maxLength="30" required />
         <span className="popup__input-error">
         </span>
